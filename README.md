@@ -41,6 +41,11 @@ If you use PCT Planner, please cite the following paper:
 - [CuPy](https://docs.cupy.dev/en/stable/install.html) with CUDA >= 11.7
 - Open3d
 
+```bash
+pip install cupy-cuda12x (对应nvidia-smi的cuda大版本)
+pip install open3d
+```
+本地环境是 go2w (python 3.10)
 ## Build & Install
 
 Inside the package, there are two modules: the point cloud tomography module for tomogram reconstruction (in **tomography/**) and the planner module for path planning and optimization (in **planner/**).
@@ -52,6 +57,7 @@ cd planner/
 ./build_thirdparty.sh
 ./build.sh
 ```
+为什么link到的是cpython-38-x86_64
 
 ## Run Examples
 
@@ -66,11 +72,24 @@ To plan in a scenario, first you need to construct the scene tomogram using the 
 - Unzip the pcd files in **rsc/pcd/pcd_files.zip** to **rsc/pcd/**.
 - For scene **"Spiral"**, you can download the pcd file from [3D2M planner spiral0.3_2.pcd](https://github.com/ZJU-FAST-Lab/3D2M-planner/tree/main/planner/src/read_pcd/PCDFiles).
 - Run **roscore**, start **RViz** with the provided config (**rsc/rviz/pct_ros.rviz**). 
+```bash
+not: rviz rsc/rviz/pct_ros.rviz
+```
+
 - In **tomography/scripts/**, run **tomography.py** with the **--scene** argument:
 
 ```bash
 cd tomography/scripts/
 python3 tomography.py --scene Spiral
+```
+ - 报错找不到库 'libnvrtc.so.12', 先本地看看
+
+```bash
+sudo find / -name "libnvrtc.so.12"
+```
+ - 然后export进来
+```bash
+export LD_LIBRARY_PATH=/home/cjsg/miniconda3/envs/go2w/lib/python3.10/site-packages/nvidia/cuda_nvrtc/lib/:$LD_LIBRARY_PATH
 ```
 
 - The generated tomogram is visualized as ROS PointCloud2 message in RViz and saved in **rsc/tomogram/**.
@@ -84,6 +103,13 @@ After the tomogram is constructed, you can run the trajectory generation example
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/YOUR/DIRECTORY/TO/PCT_planner/planner/lib/3rdparty/gtsam-4.1.1/install/lib
 cd planner/scripts/
 python3 plan.py --scene Spiral
+```
+
+```bash
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/cjsg/PCT_planner/planner/lib/3rdparty/gtsam-4.1.1/install/lib
+cd planner/scripts/
+python3 plan.py --scene Building
+
 ```
 
 - The generated trajectory is visualized as ROS Path message in RViz.

@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+
 import os
 import sys
 import time
@@ -31,6 +31,7 @@ class Tomography(object):
         self.center = np.zeros(2, dtype=np.float32)
         self.tomogram = Tomogram(scene_cfg)
         points = self.loadPCD(self.pcd_file)
+        print(self.pcd_file)
 
         # Process
         self.process(points)

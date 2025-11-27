@@ -30,6 +30,7 @@ else:
     start_pos = np.array([0.0, 0.0], dtype=np.float32)
     end_pos = np.array([23.0, 10.0], dtype=np.float32)
 
+
 path_pub = rospy.Publisher("/pct_path", Path, latch=True, queue_size=1)
 planner = TomogramPlanner(cfg)
 
