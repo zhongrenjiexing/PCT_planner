@@ -57,7 +57,27 @@ cd planner/
 ./build_thirdparty.sh
 ./build.sh
 ```
-为什么link到的是cpython-38-x86_64
+error when in ./build_thirdparty.sh:
+```bash
+-- Could NOT find Boost (missing: Boost_INCLUDE_DIR serialization system filesystem thread program_options date_time timer chrono regex) (Required is at least version "1.65")
+CMake Error at cmake/HandleBoost.cmake:33 (message):
+  Missing required Boost components >= v1.65, please install/upgrade Boost or
+  configure your search paths.
+Call Stack (most recent call first):
+  CMakeLists.txt:44 (include)
+```
+or
+```bash
+-- Found Boost: /usr/lib/x86_64-linux-gnu/cmake/Boost-1.74.0/BoostConfig.cmake (found suitable version "1.74.0", minimum required is "1.65") found components: serialization system filesystem thread program_options date_time timer chrono regex CMake Error at /usr/share/cmake-3.22/Modules/FindPackageHandleStandardArgs.cmake:230 (message): Could NOT find Eigen3 (missing: EIGEN3_INCLUDE_DIR EIGEN3_VERSION_OK) (Required is at least version "2.91.0") Call Stack (most recent call first): /usr/share/cmake-3.22/Modules/FindPackageHandleStandardArgs.cmake:594 (_FPHSA_FAILURE_MESSAGE) cmake/FindEigen3.cmake:76 (find_package_handle_standard_args) cmake/HandleEigen.cmake:14 (find_package) CMakeLists.txt:47 (include)
+```
+solution:
+```bash
+sudo apt-get update
+sudo apt-get install libboost-all-dev
+sudo apt-get install libeigen3-dev
+```
+
+为什么link到的是cpython-38-x86_64? delete /build and re-build sh.
 
 ## Run Examples
 
