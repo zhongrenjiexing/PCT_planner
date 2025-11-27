@@ -81,6 +81,8 @@ not: rviz rsc/rviz/pct_ros.rviz
 ```bash
 cd tomography/scripts/
 python3 tomography.py --scene Spiral
+python3 tomography.py --scene sii_l6
+
 ```
  - 报错找不到库 'libnvrtc.so.12', 先本地看看
 

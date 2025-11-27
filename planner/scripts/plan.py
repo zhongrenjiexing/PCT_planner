@@ -25,6 +25,10 @@ elif args.scene == 'Building':
     tomo_file = 'building2_9'
     start_pos = np.array([5.0, 5.0], dtype=np.float32)
     end_pos = np.array([-6.0, -1.0], dtype=np.float32)
+elif args.scene == 'sii_l6':
+    tomo_file = 'scans_leveled'
+    start_pos = np.array([0.0, 0.0], dtype=np.float32)
+    end_pos = np.array([21.84, -8.43], dtype=np.float32)
 else:
     tomo_file = 'plaza3_10'
     start_pos = np.array([0.0, 0.0], dtype=np.float32)
