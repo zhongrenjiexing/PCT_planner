@@ -22,7 +22,7 @@ if args.scene == 'Spiral':
     # start_pos = np.array([-16.0, -6.0], dtype=np.float32)
     start_pos = np.array([-16.0, -6.0, 0], dtype=np.float32)
     # end_pos = np.array([-26.0, -5.0], dtype=np.float32)
-    end_pos = np.array([-43.0, -3.8, 8.5], dtype=np.float32)
+    end_pos = np.array([-43.0, -3.8, 16.5], dtype=np.float32) # 0.5 / 8.5 / 16.5
 elif args.scene == 'Building':
     tomo_file = 'building2_9'
     start_pos = np.array([5.0, 5.0], dtype=np.float32)

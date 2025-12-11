@@ -27,6 +27,47 @@ If you use PCT Planner, please cite the following paper:
 }
 ```
 
+## 新增功能：支持 Z 轴高度自动选择 Slice
+
+### 功能说明
+
+现在 `plan()` 方法支持在起点和终点坐标中指定 Z 轴高度，系统会自动根据 tomogram 中的 `elev_g`（地面高度）和 `elev_c`（天花板高度）数据，找到该高度应该位于的有效 slice。
+
+**使用方法：**
+
+在 `planner/scripts/plan.py` 中，可以直接在坐标数组中指定 Z 轴高度：
+
+```python
+# 方式1：在坐标数组中直接指定 z 值
+start_pos = np.array([-16.0, -6.0, 0.0], dtype=np.float32)  # [x, y, z]
+end_pos = np.array([-43.0, -3.8, 8.5], dtype=np.float32)    # [x, y, z]
+
+# 方式2：使用 2D 坐标 + 额外的 z 参数（在 planner_wrapper.py 中）
+# planner.plan(start_pos, end_pos, start_z=0.0, end_z=8.5)
+```
+
+**工作原理：**
+
+1. 系统会根据给定的 (x, y, z) 坐标，在地图中查找对应的位置
+2. 遍历所有 slice，检查每个 slice 在该位置的 `elev_g` 和 `elev_c` 值
+3. 如果 z 在 `[elev_g, elev_c]` 范围内，则该 slice 被视为有效
+4. 如果有多个有效 slice，选择最接近 z 的 slice
+5. 如果某个 slice 没有天花板限制（`elev_c = 1e6`），只要 `z >= elev_g` 就视为有效
+
+**效果展示：**
+
+以下三张图展示了在不同高度下自动选择 slice 的效果：
+
+![Layer 1](rsc/docs/L1.png)
+*第一层（slice 0/1）：低层路径规划*
+
+![Layer 2](rsc/docs/L2.png)
+*第二层（slice 2）：中层路径规划*
+
+![Layer 3](rsc/docs/L3.png)
+*第三层（slice 3/4）：高层路径规划*
+
+
 ## Prerequisites
 
 ### Environment
