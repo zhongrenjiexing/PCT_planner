@@ -19,16 +19,19 @@ cfg = Config()
 
 if args.scene == 'Spiral':
     tomo_file = 'spiral0.3_2'
-    start_pos = np.array([-16.0, -6.0], dtype=np.float32)
-    end_pos = np.array([-26.0, -5.0], dtype=np.float32)
+    # start_pos = np.array([-16.0, -6.0], dtype=np.float32)
+    start_pos = np.array([-16.0, -6.0, 0], dtype=np.float32)
+    # end_pos = np.array([-26.0, -5.0], dtype=np.float32)
+    end_pos = np.array([-43.0, -3.8, 8.5], dtype=np.float32)
 elif args.scene == 'Building':
     tomo_file = 'building2_9'
     start_pos = np.array([5.0, 5.0], dtype=np.float32)
     end_pos = np.array([-6.0, -1.0], dtype=np.float32)
 elif args.scene == 'sii_l6':
-    tomo_file = 'scans_leveled'
-    start_pos = np.array([0.0, 0.0], dtype=np.float32)
-    end_pos = np.array([21.84, -8.43], dtype=np.float32)
+    tomo_file = '6l7l_mid360_leveled_clear'
+    start_pos = np.array([19.2, -10.9], dtype=np.float32)
+    # end_pos = np.array([21.84, -8.43], dtype=np.float32)
+    end_pos = np.array([18.9, -6.5], dtype=np.float32)
 else:
     tomo_file = 'plaza3_10'
     start_pos = np.array([0.0, 0.0], dtype=np.float32)

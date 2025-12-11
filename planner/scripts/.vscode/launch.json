@@ -5,20 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "tomography",
+            "name": "plan",
             "type": "debugpy",
             "request": "launch",
-            "program": "tomography.py",
+            "program": "plan.py",
             "console": "integratedTerminal",
             "args": [
                 "--scene",
-                // "SiiL6",
                 "Spiral",
-            ],
-            "justMyCode": false,
-            "env": {
-                "LD_LIBRARY_PATH": "/home/cjsg/miniconda3/envs/go2w/lib/python3.10/site-packages/nvidia/cuda_nvrtc/lib/:$LD_LIBRARY_PATH"
-            },
+            ]
         }
     ]
 }

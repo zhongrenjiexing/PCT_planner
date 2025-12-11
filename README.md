@@ -45,7 +45,7 @@ If you use PCT Planner, please cite the following paper:
 pip install cupy-cuda12x (对应nvidia-smi的cuda大版本)
 pip install open3d
 ```
-本地环境是 go2w (python 3.10)
+TP-16的本地环境是 conda env: go2w (python 3.10)
 ## Build & Install
 
 Inside the package, there are two modules: the point cloud tomography module for tomogram reconstruction (in **tomography/**) and the planner module for path planning and optimization (in **planner/**).
@@ -98,11 +98,12 @@ not: rviz rsc/rviz/pct_ros.rviz
 
 - In **tomography/scripts/**, run **tomography.py** with the **--scene** argument:
 
+下面的节点是转化PCD/同时发布信息的，可以把转化与发布分离
+
 ```bash
 cd tomography/scripts/
 python3 tomography.py --scene Spiral
 python3 tomography.py --scene sii_l6
-
 ```
  - 报错找不到库 'libnvrtc.so.12', 先本地看看
 
@@ -131,7 +132,12 @@ python3 plan.py --scene Spiral
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/cjsg/PCT_planner/planner/lib/3rdparty/gtsam-4.1.1/install/lib
 cd planner/scripts/
 python3 plan.py --scene Building
+```
 
+```bash
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/cjsg/PCT_planner/planner/lib/3rdparty/gtsam-4.1.1/install/lib
+cd planner/scripts/
+python3 plan.py --scene sii_l6
 ```
 
 - The generated trajectory is visualized as ROS Path message in RViz.
