@@ -3,12 +3,35 @@ import sys
 import pickle
 import numpy as np
 
+# Set LD_LIBRARY_PATH for GTSAM libraries before importing lib modules
+# This must be done before importing any modules that depend on GTSAM
+rsg_root = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../..'))
+gtsam_lib_path = os.path.join(rsg_root, 'planner/lib/3rdparty/gtsam-4.1.1/install/lib')
+smoothing_lib_path = os.path.join(rsg_root, 'planner/lib/build/src/common/smoothing')
+
+# Update LD_LIBRARY_PATH - this must be set before any dynamic library imports
+if 'LD_LIBRARY_PATH' in os.environ:
+    os.environ['LD_LIBRARY_PATH'] = f"{gtsam_lib_path}:{smoothing_lib_path}:" + os.environ['LD_LIBRARY_PATH']
+else:
+    os.environ['LD_LIBRARY_PATH'] = f"{gtsam_lib_path}:{smoothing_lib_path}"
+
+# For Linux, we also need to ensure the library loader can find the libraries
+# by using ctypes to preload the library search paths
+if sys.platform.startswith('linux'):
+    try:
+        import ctypes
+        # Preload libmetis-gtsam.so to ensure it's available
+        metis_lib_path = os.path.join(gtsam_lib_path, 'libmetis-gtsam.so')
+        if os.path.exists(metis_lib_path):
+            ctypes.CDLL(metis_lib_path, mode=ctypes.RTLD_GLOBAL)
+    except Exception as e:
+        # If preloading fails, continue anyway - the import might still work
+        pass
+
 from utils import *
 
 sys.path.append('../')
 from lib import a_star, ele_planner, traj_opt
-
-rsg_root = os.path.dirname(os.path.abspath(__file__)) + '/../..'
 
 
 class TomogramPlanner(object):

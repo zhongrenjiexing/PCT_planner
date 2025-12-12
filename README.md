@@ -93,6 +93,8 @@ Inside the package, there are two modules: the point cloud tomography module for
 You only need to build the planner module before use.
 In **planner/**, run **build_thirdparty.sh** first and then run **build.sh**. 
 
+全部在conda/不在conda下编译
+
 ```bash
 cd planner/
 ./build_thirdparty.sh
