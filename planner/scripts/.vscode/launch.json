@@ -12,7 +12,8 @@
             "console": "integratedTerminal",
             "args": [
                 "--scene",
-                "Spiral",
+                // "Spiral",
+                "sii_l6",
             ]
         }
     ]

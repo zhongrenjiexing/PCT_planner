@@ -29,9 +29,15 @@ elif args.scene == 'Building':
     end_pos = np.array([-6.0, -1.0], dtype=np.float32)
 elif args.scene == 'sii_l6':
     tomo_file = '6l7l_mid360_leveled_clear'
-    start_pos = np.array([19.2, -10.9], dtype=np.float32)
-    # end_pos = np.array([21.84, -8.43], dtype=np.float32)
-    end_pos = np.array([18.9, -6.5], dtype=np.float32)
+    # start_pos = np.array([1.4, 3.37, 0.5], dtype=np.float32)
+    start_pos = np.array([2.46, -0.9, 0.5], dtype=np.float32)
+    # start_pos = np.array([22.8, 25.4, 0.9], dtype=np.float32)
+    # start_pos = np.array([20.8, 25.5, 0.3], dtype=np.float32)
+    # end_pos = np.array([5.74, -0.62], dtype=np.float32)
+    # end_pos = np.array([1.4, 3.37, 0.5], dtype=np.float32)
+    # end_pos = np.array([16.8, 33.4, 4.7], dtype=np.float32)
+    end_pos = np.array([20.6, 8.43, 4.7], dtype=np.float32)
+    # end_pos = np.array([8.6, -0.6, 0.5], dtype=np.float32)
 else:
     tomo_file = 'plaza3_10'
     start_pos = np.array([0.0, 0.0], dtype=np.float32)
