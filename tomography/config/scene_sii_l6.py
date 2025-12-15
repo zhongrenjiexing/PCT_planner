@@ -5,7 +5,12 @@ class SceneSiiL6():
     pcd = ScenePCD()
     # PCD only need to change here
     # pcd.file_name = 'scans_0908_L10L9L8_leveled_clean.pcd'
-    pcd.file_name = '6l7l_mid360_leveled_clear.ply'
+    # pcd.file_name = '6l7l_mid360_leveled_clear.ply'
+    '''
+    给PCT-planner的点云要密集(不subsample)，手动剔除大片噪声
+    新添加点云只添加对应区域，否则易引入噪声点。
+    '''
+    pcd.file_name = '6L7L_Add613_-ready-to-pctplanner.ply' 
 
     map = SceneMap()
     map.resolution = 0.1 # 0.1 good, why?
