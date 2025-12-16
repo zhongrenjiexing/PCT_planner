@@ -1,3 +1,5 @@
+# conda env: unitreerl
+
 import os
 import sys
 import pickle
@@ -147,8 +149,8 @@ class TomogramPublisher(object):
 if __name__ == '__main__':
     rospy.init_node('tomogram_publisher', anonymous=True)
     
-    # 默认使用 spiral0.3_2.pickle
-    pickle_file = "/rsc/tomogram/spiral0.3_2.pickle"
+    # 默认使用 .pickle
+    pickle_file = "/rsc/tomogram/6l7l_mid360_leveled_clear.pickle"
     
     # 可以通过命令行参数指定其他 pickle 文件
     import argparse
