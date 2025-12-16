@@ -15,7 +15,7 @@ class SceneSiiL6():
     map = SceneMap()
     map.resolution = 0.1 # 0.1 good, why?
     map.ground_h = 0.05
-    map.slice_dh = 1.5 # 0.5
+    map.slice_dh = 0.6 # >1.2 玻璃门ok, <0.7 栏杆ok
 
     trav = SceneTrav()
     trav.kernel_size = 1 # 可通行性计算的核大小。1 表示使用 1×1 的核（默认通常是 7，表示 7×7）
