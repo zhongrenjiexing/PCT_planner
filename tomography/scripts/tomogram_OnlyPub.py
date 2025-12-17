@@ -150,7 +150,8 @@ if __name__ == '__main__':
     rospy.init_node('tomogram_publisher', anonymous=True)
     
     # 默认使用 .pickle
-    pickle_file = "/rsc/tomogram/6l7l_mid360_leveled_clear.pickle"
+    # pickle_file = "/rsc/tomogram/6l7l_mid360_leveled_clear.pickle"
+    pickle_file = "/rsc/tomogram/6L7L_Add613_-ready-to-pctplanner.pickle"
     
     # 可以通过命令行参数指定其他 pickle 文件
     import argparse
