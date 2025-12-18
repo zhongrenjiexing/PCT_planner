@@ -14,6 +14,7 @@
                 "--scene",
                 // "Spiral",
                 "sii_l6",
+                // "python plan.py --scene Spiral",
             ]
         }
     ]

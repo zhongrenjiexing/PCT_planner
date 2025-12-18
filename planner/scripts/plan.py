@@ -30,14 +30,18 @@ elif args.scene == 'Building':
     end_pos = np.array([-6.0, -1.0], dtype=np.float32)
 elif args.scene == 'sii_l6':
     tomo_file = '6L7L_Add613_-ready-to-pctplanner'
+    # tomo_file = '6L7L_Add613_align_ds'
 
-    start_pos = np.array([4.42, -16.0, 0.1], dtype=np.float32)
-    # start_pos = np.array([23.7, -21.0, 0.1], dtype=np.float32)
-
-    end_pos = np.array([6.32, -20.5, 4.65], dtype=np.float32)
+    # start_pos = np.array([4.42, -16.0, 0.1], dtype=np.float32) # from L6-614
+    end_pos = np.array([6.32, -20.5, 4.65], dtype=np.float32) # Maker Club in L7
+    # end_pos = np.array([5.56, 2.01, 0.2], dtype=np.float32) # Staircase near L6-614
 
     # start_pos = np.array([2.46, -0.9, 0.5], dtype=np.float32)
     # end_pos = np.array([20.6, 8.43, 4.7], dtype=np.float32)
+
+    start_pos = np.array([-0.68, -1.0, 0.1], dtype=np.float32) # from L6-614
+    # end_pos = np.array([-1, -4.82, 0.8], dtype=np.float32) # Slop
+    # end_pos = np.array([-2.5, -3.84, 0.1], dtype=np.float32) # 
 
 else:
     tomo_file = 'plaza3_10'
