@@ -40,8 +40,8 @@ class TFReplanNode(object):
         if args.scene == 'sii_l6':
             tomo_file = '6L7L_Add613_-ready-to-pctplanner'
             # 终点与 planner/scripts/plan.py 保持一致
-            # end_pos = np.array([6.32, -20.5, 4.65], dtype=np.float32) # Maker in L7
-            end_pos = np.array([-1.0, -4.82, 0.8], dtype=np.float32) # center of slop in L6 Experiment Room
+            end_pos = np.array([6.32, -20.5, 4.65], dtype=np.float32) # Maker in L7
+            # end_pos = np.array([-1.0, -4.82, 0.8], dtype=np.float32) # center of slop in L6 Experiment Room
 
         self.end_pos = end_pos
 
