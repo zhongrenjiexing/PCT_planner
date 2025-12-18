@@ -14,6 +14,8 @@
                 "--scene",
                 "SiiL6",
                 // "Spiral",
+                // "python tomography.py --scene Spiral",
+                // "export LD_LIBRARY_PATH=/home/cjsg/miniconda3/envs/go2w/lib/python3.10/site-packages/nvidia/cuda_nvrtc/lib/:$LD_LIBRARY_PATH",
             ],
             "justMyCode": false,
             "env": {

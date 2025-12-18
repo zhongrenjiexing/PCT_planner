@@ -11,6 +11,7 @@ class SceneSiiL6():
     新添加点云只添加对应区域，否则易引入噪声点。
     '''
     pcd.file_name = '6L7L_Add613_-ready-to-pctplanner.ply' 
+    # pcd.file_name = '6L7L_Add613_align_ds.ply' 
 
     map = SceneMap()
     map.resolution = 0.1 # 0.1 good, why?
@@ -24,7 +25,7 @@ class SceneSiiL6():
     trav.slope_max = 0.5 # 最大坡度（弧度或比例）。用于计算可站立的高度差阈值
     trav.step_max = 0.2 # 最大步高（米）。机器人可跨越的最大高度差
     trav.standable_ratio = 0.40 # 可站立比例。核内需要至少 40% 的网格是可站立的才视为可通行
-    trav.cost_barrier = 50 # 50.0 成本障碍值。通行成本超过此值的区域被视为不可通行
-    trav.safe_margin = 0.15 # 1.2 # 安全边距（米）。用于路径膨胀，确保路径与障碍物保持安全距离
+    trav.cost_barrier = 50 # 50.0 成本障碍值。通行成本小于此值的区域被视为不可通行
+    trav.safe_margin = 0.05 # 1.2 # 安全边距（米）。用于路径膨胀，确保路径与障碍物保持安全距离
     trav.inflation = 0.1 # 膨胀半径（米）。在障碍物周围膨胀的距离，用于路径规划
 
