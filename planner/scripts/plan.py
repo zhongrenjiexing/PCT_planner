@@ -34,7 +34,7 @@ elif args.scene == 'sii_l6':
 
     # start_pos = np.array([4.42, -16.0, 0.1], dtype=np.float32) # from L6-614
     end_pos = np.array([6.32, -20.5, 4.65], dtype=np.float32) # Maker Club in L7
-    # end_pos = np.array([5.56, 2.01, 0.2], dtype=np.float32) # Staircase near L6-614
+    # end_pos = np.array([5.56, 2.01, 0.2], dtype=np.float32) # little door outside L6 Exp room
 
     # start_pos = np.array([2.46, -0.9, 0.5], dtype=np.float32)
     # end_pos = np.array([20.6, 8.43, 4.7], dtype=np.float32)
