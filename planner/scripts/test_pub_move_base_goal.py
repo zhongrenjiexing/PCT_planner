@@ -51,7 +51,7 @@ def publish_goal():
     
 
     # 位置（斜坡平台 垂直于桌子 朝外）
-    goal.pose.position.x = -1
+    goal.pose.position.x = -0.8
     goal.pose.position.y = -4.82
     goal.pose.position.z = 0.8
     
