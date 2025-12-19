@@ -38,17 +38,29 @@ def publish_goal():
     goal.header.frame_id = "map"
     goal.header.stamp = rospy.Time.now()
     
-    # 位置（使用原来的默认终点）
-    goal.pose.position.x = 5.56
-    goal.pose.position.y = 2.01
-    goal.pose.position.z = 0.2
+    # 位置（L6 玻璃房小门口外面）
+    # goal.pose.position.x = 5.56
+    # goal.pose.position.y = 2.01
+    # goal.pose.position.z = 0.2
     
-    # 朝向（默认朝向，由DWA负责实际朝向控制）
+    # # 朝向（默认朝向，由DWA负责实际朝向控制）
+    # goal.pose.orientation.x = 0.0
+    # goal.pose.orientation.y = 0.0
+    # goal.pose.orientation.z = 0.0
+    # goal.pose.orientation.w = 1.0
+    
+
+    # 位置（斜坡平台 垂直于桌子 朝外）
+    goal.pose.position.x = -1
+    goal.pose.position.y = -4.82
+    goal.pose.position.z = 0.8
+    
+    # 朝向
     goal.pose.orientation.x = 0.0
     goal.pose.orientation.y = 0.0
-    goal.pose.orientation.z = 0.0
-    goal.pose.orientation.w = 1.0
-    
+    goal.pose.orientation.z = -0.70710678
+    goal.pose.orientation.w = 0.70710678
+
     # 发布
     rospy.loginfo("=" * 50)
     rospy.loginfo("📍 发布导航目标点:")
