@@ -128,25 +128,37 @@ class TFReplanNode(object):
             return
 
         # 检查当前位置与目标点的距离
-        distance = np.linalg.norm(start_pos - self.end_pos)
+        # 使用3D距离
+        distance_3d = np.linalg.norm(start_pos - self.end_pos)
+        # 使用2D距离（XY平面），更准确反映导航距离
+        distance_2d = np.linalg.norm(start_pos[:2] - self.end_pos[:2])
         
-        # 如果距离太近，认为已接近目标，停止规划
-        if distance < self.goal_distance_threshold:
-            rospy.loginfo_throttle(2.0, "🎯 已接近目标点 (距离: %.3f m < %.3f m)，停止路径规划", 
-                                  distance, self.goal_distance_threshold)
+        # 使用2D距离进行安全检查（Z轴偏差不应影响停止判断）
+        distance = distance_2d
+        
+        # 安全距离检查：C++断言要求路径点>1，距离太近会导致路径点不足
+        # 必须提前阻止规划，因为C++的assert无法被Python捕获
+        min_safe_distance = max(self.goal_distance_threshold, 0.3)  # 至少0.3米
+        
+        if distance < min_safe_distance:
+            rospy.loginfo_throttle(2.0, "🎯 已接近目标点 (2D距离: %.3fm, 3D距离: %.3fm < 阈值: %.3fm)，停止路径规划", 
+                                  distance_2d, distance_3d, min_safe_distance)
             self.navigation_reached = True  # 标记为已到达
             return
         
         # 调用规划器（使用 try-except 捕获可能的异常）
-        rospy.logdebug("Planning from (%.2f, %.2f, %.2f) to (%.2f, %.2f, %.2f)",
+        rospy.loginfo("🛣️  Planning: 2D=%.3fm, 3D=%.3fm, from=(%.2f,%.2f,%.2f) to=(%.2f,%.2f,%.2f)",
+                      distance_2d, distance_3d,
                       start_pos[0], start_pos[1], start_pos[2],
                       self.end_pos[0], self.end_pos[1], self.end_pos[2])
         
         try:
             traj_3d = self.planner.plan(start_pos, self.end_pos)
+            if traj_3d is not None:
+                rospy.loginfo("✅ 规划成功，生成 %d 个路径点", len(traj_3d))
         except Exception as e:
             # 捕获规划器异常（包括断言失败等）
-            rospy.logwarn_throttle(2.0, "❌ 规划器异常 (距离: %.3f m): %s", distance, str(e))
+            rospy.logwarn("❌ 规划器异常 (距离: %.3f m): %s", distance, str(e))
             # 如果是因为距离太近导致的异常，标记为已到达
             if distance < 0.5:  # 0.5米内的异常认为是接近目标导致的
                 rospy.loginfo("已非常接近目标点，标记为已到达")
@@ -157,15 +169,26 @@ class TFReplanNode(object):
             rospy.logwarn_throttle(2.0, "❌ Planner failed to find a path (returned None).")
             return
         
-        # 检查路径是否为空
+        # 检查路径是否为空或点数过少
         if len(traj_3d) == 0:
             rospy.logwarn_throttle(2.0, "❌ Path is empty, skipping publish.")
+            return
+        
+        # 路径点数过少（<=1）会导致优化器断言失败
+        if len(traj_3d) <= 1:
+            rospy.logwarn_throttle(2.0, "❌ Path too short (%d points), likely too close to goal. Stopping.", len(traj_3d))
+            self.navigation_reached = True  # 标记为已到达
             return
 
         # 发布路径到 /pct_path
         path_msg = traj2ros(traj_3d)
         if len(path_msg.poses) == 0:
             rospy.logwarn_throttle(2.0, "Converted path is empty, skipping publish.")
+            return
+        
+        if len(path_msg.poses) <= 1:
+            rospy.logwarn_throttle(2.0, "❌ Converted path too short (%d points). Stopping.", len(path_msg.poses))
+            self.navigation_reached = True
             return
             
         self.path_pub.publish(path_msg)
@@ -176,7 +199,7 @@ class TFReplanNode(object):
         self.end_pos = np.array([
             msg.pose.position.x,
             msg.pose.position.y,
-            msg.pose.position.z
+            msg.pose.position.z + 0.2 # 高一些
         ], dtype=np.float32)
         
         self.goal_received = True
