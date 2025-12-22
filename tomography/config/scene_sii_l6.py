@@ -10,12 +10,16 @@ class SceneSiiL6():
     给PCT-planner的点云要密集(不subsample)，手动剔除大片噪声
     新添加点云只添加对应区域，否则易引入噪声点。
     '''
-    pcd.file_name = '6L7L_Add613_-ready-to-pctplanner.ply' 
-    # pcd.file_name = '6L7L_Add613_align_ds.ply' 
+    # pcd.file_name = '6L7L_Add613_-ready-to-pctplanner.ply' 
+    # map.ground_h = 0.05 # 
+
+
+
+    pcd.file_name = '567_-ready-to-pctplanner.ply' 
 
     map = SceneMap()
     map.resolution = 0.1 # 0.1 good, why?
-    map.ground_h = 0.05
+    map.ground_h = -4.7
     map.slice_dh = 0.6 # >1.2 玻璃门ok, <0.7 栏杆ok
 
     trav = SceneTrav()

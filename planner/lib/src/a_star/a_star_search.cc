@@ -45,6 +45,8 @@ step_cost_weight_  = step_cost_weight;
         grid_map_[i][j][k].height = height;
         grid_map_[i][j][k].ele = ele_map(j + row_offset, k);
         grid_map_[i][j][k].layer = i;
+        // 标记节点是否有有效地面数据（height < -50表示NaN/无效）
+        grid_map_[i][j][k].valid = (height > -50.0);
       }
     }
   }
@@ -88,6 +90,12 @@ bool Astar::Search(const Eigen::Vector3i& start, const Eigen::Vector3i& goal) {
 
   auto start_node = &grid_map_[start[0]][start[2]][start[1]];
   auto goal_node = &grid_map_[goal[0]][goal[2]][goal[1]];
+  
+  printf("[DEBUG] Start node: layer=%d, row=%d, col=%d, height=%.2f, valid=%d\n",
+         start[0], start[1], start[2], start_node->height, start_node->valid);
+  printf("[DEBUG] Goal node: layer=%d, row=%d, col=%d, height=%.2f, valid=%d\n",
+         goal[0], goal[1], goal[2], goal_node->height, goal_node->valid);
+  
   start_node->g = 0.0;
 
   if (goal_node->cost > cost_threshold_) {
@@ -105,14 +113,33 @@ bool Astar::Search(const Eigen::Vector3i& start, const Eigen::Vector3i& goal) {
   while (!open_set.empty()) {
     Node* current_node = open_set.top();
     open_set.pop();
+    
+    // 跳过无效节点
+    if (!current_node->valid) {
+      if (debug_) {
+        printf("[DEBUG] Skipping invalid node: layer=%d, row=%d, col=%d, height=%.2f\n",
+               current_node->layer, current_node->idx[1], current_node->idx[2], current_node->height);
+      }
+      continue;
+    }
 
     if (current_node->idx == goal_node->idx) {
+      int path_idx = 0;
       while (current_node->parent != nullptr) {
         // search_result_.emplace_back(Eigen::Vector3i(
         //     current_node->layer, current_node->idx[1],
         //     current_node->idx[2]));
         search_result_.emplace_back(current_node);
+        
+        // 打印前10个路径节点的信息
+        if (path_idx < 10) {
+          printf("[DEBUG] Path node %d: layer=%d, row=%d, col=%d, height=%.2f, valid=%d\n",
+                 path_idx, current_node->layer, current_node->idx[1], current_node->idx[2],
+                 current_node->height, current_node->valid);
+        }
+        
         current_node = current_node->parent;
+        path_idx++;
       }
       std::reverse(search_result_.begin(), search_result_.end());
       if (debug_) ConvertClosedSetToMatrix(closed_set);
@@ -144,12 +171,23 @@ bool Astar::Search(const Eigen::Vector3i& start, const Eigen::Vector3i& goal) {
       }
 
       auto neighbor_node = &grid_map_[layer][i][j];
+      
+      // 跳过没有有效地面数据的节点
+      if (!neighbor_node->valid) {
+        if (debug_ && closed_set.size() < 10) {  // 只打印前几次
+          printf("[DEBUG] Skipping invalid neighbor: layer=%d, row=%d, col=%d, height=%.2f\n",
+                 layer, i, j, neighbor_node->height);
+        }
+        continue;
+      }
 
       if (neighbor_node->cost > cost_threshold_) {
         if (abs(neighbor_node->ele) < 0.5) {
           continue;
         } else {
-          if (std::abs(neighbor_node->height - current_node->height) > 0.3) {
+          // 放宽高度约束：从0.3m增加到2.0m
+          // 这允许在不同slice之间更灵活地切换，避免轨迹浮空
+          if (std::abs(neighbor_node->height - current_node->height) > 2.0) {
             continue;
           }
         }
@@ -201,25 +239,85 @@ int Astar::DecideLayer(const Node* cur_node) const {
   double cur_height = cur_node->height;
 
   int true_layer = layer;
-
+  
+  // 关键修改：如果当前层在该位置没有有效地面数据（height < -50表示NaN），
+  // 必须切换到有有效数据的层
+  bool current_layer_invalid = (cur_height < -50.0);
+  
+  // 改进的层选择策略：找到有效且高度最接近的层
+  double min_height_diff = 1e9;
+  int best_layer = layer;
+  bool found_valid = false;
+  
+  for (int test_layer = 0; test_layer < max_layers_; ++test_layer) {
+    const Node& test_node = grid_map_[test_layer][i][j];
+    
+    // 跳过无效层
+    if (!test_node.valid) {
+      continue;
+    }
+    
+    // 跳过成本过高且没有gateway标记的层
+    if (test_node.cost > cost_threshold_ && abs(test_node.ele) < 0.5) {
+      continue;
+    }
+    
+    double height_diff = std::abs(test_node.height - cur_height);
+    
+    // 如果当前层无效，必须找到有效层，不考虑高度差限制
+    // 如果当前层有效，只在高度差合理时切换
+    bool should_update = false;
+    if (current_layer_invalid) {
+      // 当前层无效，接受任何有效层
+      should_update = (height_diff < min_height_diff);
+    } else {
+      // 当前层有效，只在高度差<2.0m时切换
+      should_update = (height_diff < min_height_diff && height_diff < 2.0);
+    }
+    
+    if (should_update) {
+      min_height_diff = height_diff;
+      best_layer = test_layer;
+      found_valid = true;
+    }
+  }
+  
+  if (found_valid) {
+    true_layer = best_layer;
+  }
+  
+  // 检查是否需要根据ele标记进行层切换（gateway）
   for (const auto offset : search_layers_offset_) {
-    int cur_layer = layer + offset;
+    int cur_layer = best_layer + offset;
 
     if (cur_layer < 0 || cur_layer >= max_layers_) {
       continue;
     }
 
     const Node& search_node = grid_map_[cur_layer][i][j];
+    
+    // 跳过无效层
+    if (!search_node.valid) {
+      continue;
+    }
 
-    if (abs(search_node.height - cur_height) > 0.2) {
+    if (abs(search_node.height - cur_height) > 2.0) {  // 放宽到2.0m
       continue;
     }
 
     if (search_node.ele > 0.5) {
-      true_layer = std::min(cur_layer + 1, max_layers_ - 1);
+      int next_layer = std::min(cur_layer + 1, max_layers_ - 1);
+      // 确保目标层有效
+      if (grid_map_[next_layer][i][j].valid) {
+        true_layer = next_layer;
+      }
       break;
     } else if (search_node.ele < -0.5) {
-      true_layer = std::max(cur_layer - 1, 0);
+      int next_layer = std::max(cur_layer - 1, 0);
+      // 确保目标层有效
+      if (grid_map_[next_layer][i][j].valid) {
+        true_layer = next_layer;
+      }
       break;
     }
   }
