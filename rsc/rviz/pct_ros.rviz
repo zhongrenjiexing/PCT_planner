@@ -1,6 +1,6 @@
 Panels:
   - Class: rviz/Displays
-    Help Height: 78
+    Help Height: 138
     Name: Displays
     Property Tree Widget:
       Expanded:
@@ -55,8 +55,8 @@ Visualization Manager:
     - Alpha: 0.30000001192092896
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 22.80001449584961
-        Min Value: -0.6000000238418579
+        Max Value: 8.868448257446289
+        Min Value: -7.020289897918701
         Value: true
       Axis: Z
       Channel Name: intensity

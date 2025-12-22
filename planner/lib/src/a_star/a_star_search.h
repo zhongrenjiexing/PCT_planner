@@ -28,6 +28,7 @@ class Node {
   double ele = 0;
   double cost = 0.0;
   int layer = 0;
+  bool valid = true;  // 标记该节点是否有有效地面数据
   Eigen::Vector3i idx = Eigen::Vector3i(0, 0, 0);  // layer, row, col
   Node* parent = nullptr;
 };

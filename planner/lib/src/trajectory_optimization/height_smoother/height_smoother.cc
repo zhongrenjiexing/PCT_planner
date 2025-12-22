@@ -19,8 +19,10 @@ Eigen::VectorXd HeightSmoother::Smooth(const Eigen::VectorXd& coarse_height,
   }
 
   for (int i = 0; i < coarse_height.size(); ++i) {
-    lbs.emplace_back(-1.0);
-    ubs.emplace_back(std::max(-1.0, upper_bound(i) - 0.3));
+    // 使用A*路径高度减去一个安全余量作为下界，而不是固定-1.0
+    // 这样可以防止轨迹过度偏离地面
+    lbs.emplace_back(coarse_height(i) - 0.8);  // 允许最多下降0.8m
+    ubs.emplace_back(std::max(coarse_height(i) - 0.8, upper_bound(i) - 0.3));
     refs.emplace_back(coarse_height(i));
     ts.emplace_back(i * dt);
   }
@@ -30,7 +32,9 @@ Eigen::VectorXd HeightSmoother::Smooth(const Eigen::VectorXd& coarse_height,
   kernel->AddRegularization(1e-5);
   // kernel->AddSecondOrderDerivativeMatrix(5);
   kernel->AddThirdOrderDerivativeMatrix(30);
-  kernel->AddReferenceLineKernelMatrix(ts, refs, 1);
+  // 关键修改：大幅增加参考线权重，从1提高到100
+  // 这样优化器会更紧密跟随A*路径，尤其是在楼梯等大高度变化区域
+  kernel->AddReferenceLineKernelMatrix(ts, refs, 100);
   auto constraint = solver.mutable_constraint();
   constraint->AddThirdDerivativeSmoothConstraint();
   constraint->AddPointConstraint(ts.front(), coarse_height(0));
