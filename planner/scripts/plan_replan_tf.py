@@ -41,7 +41,8 @@ class TFReplanNode(object):
         cfg = Config()
 
         if args.scene == 'sii_l6':
-            tomo_file = '6L7L_Add613_-ready-to-pctplanner'
+            # tomo_file = '6L7L_Add613_-ready-to-pctplanner'
+            tomo_file = '567_-ready-to-pctplanner'
 
         # 导航目标点（从 /move_base_simple/goal 接收）
         self.end_pos = None
