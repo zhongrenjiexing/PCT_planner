@@ -17,7 +17,7 @@ class SceneSiiL6():
 
     # pcd.file_name = '567_-ready-to-pctplanner.ply' 
     # pcd.file_name = '2026-01-02_22-26-52_colorized_L567_FT.ply' # 还没有处理电梯
-    pcd.file_name = '2026-01-02_22-26-52_colorized_L567_FT_AddLift.ply' 
+    pcd.file_name = '2026-01-02_22-26-52_colorized_L567_FT_AddLift_AddPoints.ply' 
 
     map = SceneMap()
     map.resolution = 0.1 # 0.1 good, why?
