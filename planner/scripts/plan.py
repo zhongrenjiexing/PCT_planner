@@ -90,21 +90,8 @@ def pct_plan():
 
 
 if __name__ == '__main__':
-    import time
-    try:
-        print("Initializing ROS node...")
-        rospy.init_node("pct_planner", anonymous=True)
-        print("ROS node initialized")
+    rospy.init_node("pct_planner", anonymous=True)
 
-        print("Starting planning...")
-        pct_plan()
-        print("Planning and publishing completed successfully!")
+    pct_plan()
 
-        # 给一点时间让消息发布出去，然后退出
-        time.sleep(0.1)
-        print("Exiting...")
-
-    except Exception as e:
-        print(f"Error: {e}")
-        import traceback
-        traceback.print_exc()
+    rospy.spin()
