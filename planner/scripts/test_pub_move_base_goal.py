@@ -25,7 +25,7 @@ GOAL_POSITIONS = {
     2: {
         "name": "Button_BC_6L",
         "position": {"x": 20.58, "y": -12.78, "z": 1.0},
-        "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
+        "orientation": {"x": 0.0, "y": 0.0, "z": 0.707, "w": 0.707}
     },
     3: {
         "name": "Button_DE_6L",
@@ -35,7 +35,7 @@ GOAL_POSITIONS = {
     4: {
         "name": "Button_EF_6L",
         "position": {"x": 18.17, "y": -9.91, "z": 1.0},
-        "orientation": {"x": 0.0, "y": 0.0, "z": 0.707, "w": 0.707}
+        "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
     },
     5: {
         "name": "Button_AB_5L",
@@ -45,7 +45,7 @@ GOAL_POSITIONS = {
     6: {
         "name": "Button_BC_5L",
         "position": {"x": 20.68, "y": -12.78, "z": -3.3},
-        "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
+        "orientation": {"x": 0.0, "y": 0.0, "z": 0.707, "w": 0.707}
     },
     7: {
         "name": "Button_DE_5L",
@@ -55,7 +55,7 @@ GOAL_POSITIONS = {
     8: {
         "name": "Button_EF_5L",
         "position": {"x": 18.07, "y": -9.91, "z": -3.3},
-        "orientation": {"x": 0.0, "y": 0.0, "z": 0.707, "w": 0.707}
+        "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
     }
 }
 
