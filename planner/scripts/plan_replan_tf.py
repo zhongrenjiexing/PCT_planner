@@ -56,8 +56,8 @@ class TFReplanNode(object):
         # 目标点距离阈值：当距离目标点小于此值时停止规划（避免路径点过少导致崩溃）
         self.goal_distance_threshold = 0.1  # 单位：米
 
-        # 路径话题与原节点保持一致
-        self.path_pub = rospy.Publisher("/pct_path", Path, latch=True, queue_size=1)
+        # 发布原始未优化路径
+        self.path_pub = rospy.Publisher("/pct_raw_path", Path, latch=True, queue_size=1)
         
         # 订阅导航目标点
         self.goal_sub = rospy.Subscriber(
@@ -156,7 +156,8 @@ class TFReplanNode(object):
         try:
             traj_3d = self.planner.plan(start_pos, self.end_pos)
             if traj_3d is not None:
-                rospy.loginfo("✅ 规划成功，生成 %d 个路径点", len(traj_3d))
+                raw_traj_3d = self.planner.get_raw_path()
+                rospy.loginfo("✅ 规划成功，原始路径 %d 个点，优化后 %d 个点", len(raw_traj_3d), len(traj_3d))
         except Exception as e:
             # 捕获规划器异常（包括断言失败等）
             rospy.logwarn("❌ 规划器异常 (距离: %.3f m): %s", distance, str(e))
@@ -165,35 +166,24 @@ class TFReplanNode(object):
                 rospy.loginfo("已非常接近目标点，标记为已到达")
                 self.navigation_reached = True
             return
-        
+
         if traj_3d is None:
             rospy.logwarn_throttle(2.0, "❌ Planner failed to find a path (returned None).")
             return
-        
-        # 检查路径是否为空或点数过少
-        if len(traj_3d) == 0:
-            rospy.logwarn_throttle(2.0, "❌ Path is empty, skipping publish.")
-            return
-        
-        # 路径点数过少（<=1）会导致优化器断言失败
-        if len(traj_3d) <= 1:
-            rospy.logwarn_throttle(2.0, "❌ Path too short (%d points), likely too close to goal. Stopping.", len(traj_3d))
-            self.navigation_reached = True  # 标记为已到达
+
+        # 检查原始路径是否为空
+        if len(raw_traj_3d) == 0:
+            rospy.logwarn_throttle(2.0, "❌ Raw path is empty, skipping publish.")
             return
 
-        # 发布路径到 /pct_path
-        path_msg = traj2ros(traj_3d)
+        # 发布原始未优化路径到 /pct_raw_path
+        path_msg = traj2ros(raw_traj_3d)
         if len(path_msg.poses) == 0:
-            rospy.logwarn_throttle(2.0, "Converted path is empty, skipping publish.")
+            rospy.logwarn_throttle(2.0, "Converted raw path is empty, skipping publish.")
             return
-        
-        if len(path_msg.poses) <= 1:
-            rospy.logwarn_throttle(2.0, "❌ Converted path too short (%d points). Stopping.", len(path_msg.poses))
-            self.navigation_reached = True
-            return
-            
+
         self.path_pub.publish(path_msg)
-        rospy.loginfo_throttle(2.0, "Published new trajectory with %d points from TF start pose.", len(traj_3d))
+        rospy.loginfo_throttle(2.0, "Published raw trajectory with %d points from TF start pose.", len(raw_traj_3d))
 
     def goal_callback(self, msg):
         """接收导航目标点回调函数"""
