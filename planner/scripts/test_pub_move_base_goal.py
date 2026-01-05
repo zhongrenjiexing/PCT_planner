@@ -13,24 +13,44 @@ from geometry_msgs.msg import PoseStamped
 # 预定义的目标位置字典
 GOAL_POSITIONS = {
     1: {
-        "name": "L6 玻璃房小门口外面",
-        "position": {"x": 5.56, "y": 2.01, "z": 0.2},
-        "orientation": {"x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0}
+        "name": "Button_AB_6L",
+        "position": {"x": 20.66, "y": -9.88, "z": 1.0},
+        "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
     },
     2: {
-        "name": "斜坡平台（垂直于桌子，朝外）",
-        "position": {"x": -0.8, "y": -4.82, "z": 0.8},
-        "orientation": {"x": 0.0, "y": 0.0, "z": -0.70710678, "w": 0.70710678}
+        "name": "Button_BC_6L",
+        "position": {"x": 20.68, "y": -12.78, "z": 1.0},
+        "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
     },
     3: {
-        "name": "5L 公共区域",
-        "position": {"x": 17.2, "y": -29.5, "z": -4.0},
-        "orientation": {"x": 0.0, "y": 0.0, "z": -0.70710678, "w": 0.70710678}
+        "name": "Button_DE_6L",
+        "position": {"x": 18.08, "y": -12.79, "z": 1.0},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 0.707, "w": 0.707}
     },
     4: {
-        "name": "6L 充电桩",
-        "position": {"x": -0.68, "y": -1.0, "z": 0.1},
-        "orientation": {"x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0}
+        "name": "Button_EF_6L",
+        "position": {"x": 18.07, "y": -9.91, "z": 1.0},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 0.707, "w": 0.707}
+    },
+    5: {
+        "name": "Button_AB_5L",
+        "position": {"x": 20.66, "y": -9.88, "z": -3.3},
+        "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
+    },
+    6: {
+        "name": "Button_BC_5L",
+        "position": {"x": 20.68, "y": -12.78, "z": -3.3},
+        "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
+    },
+    7: {
+        "name": "Button_DE_5L",
+        "position": {"x": 18.08, "y": -12.79, "z": -3.3},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 0.707, "w": 0.707}
+    },
+    8: {
+        "name": "Button_EF_5L",
+        "position": {"x": 18.07, "y": -9.91, "z": -3.3},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 0.707, "w": 0.707}
     }
 }
 
