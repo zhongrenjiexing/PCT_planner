@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 import sys
 import pickle
@@ -155,6 +156,58 @@ class TomogramPlanner(object):
         traj_3d = transTrajGrid2Map(self.map_dim, self.center, self.resolution, traj_3d)
 
         return traj_3d
+
+    def get_raw_path(self):
+        """
+        获取 A* 算法找到的原始路径的 3D 坐标版本
+        """
+        if not hasattr(self, 'start_idx') or not hasattr(self, 'end_idx'):
+            return None
+
+        path_finder: a_star.Astar = self.planner.get_path_finder()
+        path = path_finder.get_result_matrix()
+        if len(path) == 0:
+            return None
+
+        optimizer: traj_opt.GPMPOptimizer = (
+            self.planner.get_trajectory_optimizer()
+            if not self.use_quintic
+            else self.planner.get_trajectory_optimizer_wnoj()
+        )
+
+        # 构建原始轨迹
+        # path格式: [layer, y, x]，需要转换为[x, y, z]格式给transTrajGrid2Map
+        # transTrajGrid2Map期望输入格式: [x, y, z]
+
+        # 首先将路径坐标转换为地图坐标（只转换x,y，高度后面设置）
+        temp_traj = np.stack([path[:, 2], path[:, 1], np.zeros(len(path))], axis=1)  # x, y, z(临时)
+        raw_traj_map = transTrajGrid2Map(self.map_dim, self.center, self.resolution, temp_traj)
+
+        # 使用地图坐标来查询高度信息
+        z_coords = np.zeros(len(path))
+        for i, (layer_idx, grid_y, grid_x) in enumerate(path.astype(int)):
+            # 将地图坐标转换回网格坐标来查询elev_g
+            map_x, map_y = raw_traj_map[i, 0], raw_traj_map[i, 1]
+
+            # 转换回网格索引
+            pos = np.array([map_x, map_y]) - self.center[:2]
+            idx = np.round(pos / self.resolution).astype(int) + self.offset
+            grid_x_check = idx[1]  # x索引
+            grid_y_check = idx[0]  # y索引
+
+            # 确保索引在有效范围内
+            if (0 <= layer_idx < self.elev_g.shape[0] and
+                0 <= grid_y_check < self.elev_g.shape[1] and
+                0 <= grid_x_check < self.elev_g.shape[2]):
+                # 使用地面高度作为z坐标
+                z_coords[i] = self.elev_g[layer_idx, grid_y_check, grid_x_check]
+            else:
+                # 如果索引超出范围，使用基于层的近似值
+                z_coords[i] = self.slice_h0 + layer_idx * self.slice_dh
+
+        raw_traj_3d = np.stack([raw_traj_map[:, 0], raw_traj_map[:, 1], z_coords], axis=1)
+
+        return raw_traj_3d
     
     def pos2idx(self, pos):
         pos = np.asarray(pos[:2], dtype=np.float32) - self.center[:2]

@@ -34,7 +34,7 @@ Eigen::VectorXd HeightSmoother::Smooth(const Eigen::VectorXd& coarse_height,
   kernel->AddThirdOrderDerivativeMatrix(30);
   // 关键修改：大幅增加参考线权重，从1提高到100
   // 这样优化器会更紧密跟随A*路径，尤其是在楼梯等大高度变化区域
-  kernel->AddReferenceLineKernelMatrix(ts, refs, 100);
+  kernel->AddReferenceLineKernelMatrix(ts, refs, 1); // pervious:1 / sonnet: 100
   auto constraint = solver.mutable_constraint();
   constraint->AddThirdDerivativeSmoothConstraint();
   constraint->AddPointConstraint(ts.front(), coarse_height(0));
