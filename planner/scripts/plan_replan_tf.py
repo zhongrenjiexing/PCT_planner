@@ -46,6 +46,7 @@ class TFReplanNode(object):
 
         # 导航目标点（从 /move_base_simple/goal 接收）
         self.end_pos = None
+        self.end_orientation = None  # 存储目标点的朝向
         self.goal_received = False
         self.goal_timestamp = None  # 记录目标接收时间，用于过滤旧的result消息
 
@@ -176,14 +177,86 @@ class TFReplanNode(object):
             rospy.logwarn_throttle(2.0, "❌ Raw path is empty, skipping publish.")
             return
 
-        # 发布原始未优化路径到 /pct_raw_path
-        path_msg = traj2ros(raw_traj_3d)
+        # 为路径点添加朝向信息（后三个点，最后一个点使用目标朝向）
+        path_msg = self.add_orientation_to_path(raw_traj_3d, self.end_orientation)
         if len(path_msg.poses) == 0:
             rospy.logwarn_throttle(2.0, "Converted raw path is empty, skipping publish.")
             return
 
         self.path_pub.publish(path_msg)
         rospy.loginfo_throttle(2.0, "Published raw trajectory with %d points from TF start pose.", len(raw_traj_3d))
+
+    def add_orientation_to_path(self, traj, goal_orientation=None):
+        """为路径点添加朝向信息，后三个点基于路径方向计算朝向，最后一个点使用目标朝向"""
+        from nav_msgs.msg import Path
+        from geometry_msgs.msg import PoseStamped
+        import math
+
+        path_msg = Path()
+        path_msg.header.frame_id = "map"
+
+        if len(traj) == 0:
+            return path_msg
+
+        # 为所有点创建PoseStamped，默认朝向为向前
+        poses = []
+        for i, waypoint in enumerate(traj):
+            pose = PoseStamped()
+            pose.header.frame_id = "map"
+            pose.pose.position.x = waypoint[0]
+            pose.pose.position.y = waypoint[1]
+            pose.pose.position.z = waypoint[2]
+
+            # 默认朝向 (朝向正X方向)
+            pose.pose.orientation.x = 0.0
+            pose.pose.orientation.y = 0.0
+            pose.pose.orientation.z = 0.0
+            pose.pose.orientation.w = 1.0
+
+            poses.append(pose)
+
+        # 为后三个点（如果存在）计算朝向
+        num_points = len(poses)
+        if num_points >= 2:  # 至少需要2个点才能计算方向
+            # 计算需要添加朝向的点的索引（最后三个点）
+            start_idx = max(0, num_points - 3)
+
+            for i in range(start_idx, num_points):
+                if i == num_points - 1 and goal_orientation is not None:
+                    # 最后一个点：使用目标点的朝向
+                    poses[i].pose.orientation.x = goal_orientation[0]
+                    poses[i].pose.orientation.y = goal_orientation[1]
+                    poses[i].pose.orientation.z = goal_orientation[2]
+                    poses[i].pose.orientation.w = goal_orientation[3]
+                else:
+                    # 其他点：使用当前点到下一个点的方向
+                    if i < num_points - 1:
+                        # 使用当前点到下一个点的方向
+                        current = np.array([poses[i].pose.position.x, poses[i].pose.position.y])
+                        next_point = np.array([poses[i+1].pose.position.x, poses[i+1].pose.position.y])
+                        direction = next_point - current
+                    else:
+                        # 最后一个点（如果没有目标朝向）：使用前一个点到当前点的方向
+                        current = np.array([poses[i].pose.position.x, poses[i].pose.position.y])
+                        prev_point = np.array([poses[i-1].pose.position.x, poses[i-1].pose.position.y])
+                        direction = current - prev_point
+
+                    # 归一化方向向量
+                    norm = np.linalg.norm(direction)
+                    if norm > 1e-6:  # 避免除零
+                        direction = direction / norm
+
+                        # 计算朝向角度（相对于X轴）
+                        yaw = math.atan2(direction[1], direction[0])
+
+                        # 转换为四元数
+                        poses[i].pose.orientation.x = 0.0
+                        poses[i].pose.orientation.y = 0.0
+                        poses[i].pose.orientation.z = math.sin(yaw / 2.0)
+                        poses[i].pose.orientation.w = math.cos(yaw / 2.0)
+
+        path_msg.poses = poses
+        return path_msg
 
     def goal_callback(self, msg):
         """接收导航目标点回调函数"""
@@ -192,13 +265,24 @@ class TFReplanNode(object):
             msg.pose.position.y,
             msg.pose.position.z + 0.2 # 高一些
         ], dtype=np.float32)
-        
+
+        # 存储目标点的朝向
+        self.end_orientation = np.array([
+            msg.pose.orientation.x,
+            msg.pose.orientation.y,
+            msg.pose.orientation.z,
+            msg.pose.orientation.w
+        ], dtype=np.float32)
+
         self.goal_received = True
         self.navigation_reached = False  # 重置导航状态
         self.goal_timestamp = rospy.Time.now()  # 记录新目标接收时间
-        
+
         rospy.loginfo("📍 接收到新的导航目标: (%.3f, %.3f, %.3f)",
                       self.end_pos[0], self.end_pos[1], self.end_pos[2])
+        rospy.loginfo("   目标朝向: (%.3f, %.3f, %.3f, %.3f)",
+                      self.end_orientation[0], self.end_orientation[1],
+                      self.end_orientation[2], self.end_orientation[3])
         rospy.loginfo("开始路径规划...")
 
     def result_callback(self, msg):
@@ -215,7 +299,7 @@ class TFReplanNode(object):
             rospy.loginfo("✅ 导航成功到达目标点！")
             self.navigation_reached = True
         else:
-            rospy.logwarn(f"❌ 导航失败，状态码: {status}")
+            rospy.logwarn("❌ 导航失败，状态码: %d", status)
             self.navigation_reached = False
         self.result_received = True
 

@@ -12,24 +12,29 @@ from geometry_msgs.msg import PoseStamped
 
 # 预定义的目标位置字典
 GOAL_POSITIONS = {
+    11: {
+        "name": "test",
+        "position": {"x": -1.5, "y": -4.5, "z": 1.0},
+        "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
+    },
     1: {
         "name": "Button_AB_6L",
-        "position": {"x": 20.66, "y": -9.88, "z": 1.0},
+        "position": {"x": 20.56, "y": -9.88, "z": 1.0},
         "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
     },
     2: {
         "name": "Button_BC_6L",
-        "position": {"x": 20.68, "y": -12.78, "z": 1.0},
+        "position": {"x": 20.58, "y": -12.78, "z": 1.0},
         "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
     },
     3: {
         "name": "Button_DE_6L",
-        "position": {"x": 18.08, "y": -12.79, "z": 1.0},
+        "position": {"x": 18.18, "y": -12.79, "z": 1.0},
         "orientation": {"x": 0.0, "y": 0.0, "z": 0.707, "w": 0.707}
     },
     4: {
         "name": "Button_EF_6L",
-        "position": {"x": 18.07, "y": -9.91, "z": 1.0},
+        "position": {"x": 18.17, "y": -9.91, "z": 1.0},
         "orientation": {"x": 0.0, "y": 0.0, "z": 0.707, "w": 0.707}
     },
     5: {
