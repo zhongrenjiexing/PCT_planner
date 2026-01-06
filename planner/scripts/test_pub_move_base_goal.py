@@ -17,6 +17,11 @@ GOAL_POSITIONS = {
         "position": {"x": -1.5, "y": -4.5, "z": 1.0},
         "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
     },
+    12: {
+        "name": "test",
+        "position": {"x": -1.5, "y": -4.5, "z": 1.0},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 0.707, "w": 0.707}
+    },
     1: {
         "name": "Button_AB_6L",
         "position": {"x": 20.56, "y": -9.88, "z": 1.0},

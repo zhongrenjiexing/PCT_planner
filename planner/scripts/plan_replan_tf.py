@@ -10,6 +10,7 @@ import tf
 from nav_msgs.msg import Path
 from geometry_msgs.msg import PoseStamped
 from move_base_msgs.msg import MoveBaseActionResult
+from actionlib_msgs.msg import GoalStatusArray
 
 from utils import *
 from planner_wrapper import TomogramPlanner
@@ -53,6 +54,7 @@ class TFReplanNode(object):
         # 导航状态标志
         self.navigation_reached = False
         self.result_received = False
+        self.navigation_cancelled = False  # 新增：检测是否被取消
         
         # 目标点距离阈值：当距离目标点小于此值时停止规划（避免路径点过少导致崩溃）
         self.goal_distance_threshold = 0.1  # 单位：米
@@ -73,6 +75,14 @@ class TFReplanNode(object):
             "/move_base/result",
             MoveBaseActionResult,
             self.result_callback,
+            queue_size=1
+        )
+        
+        # 订阅导航状态（用于检测取消）
+        self.status_sub = rospy.Subscriber(
+            "/move_base/status",
+            GoalStatusArray,
+            self.status_callback,
             queue_size=1
         )
 
@@ -111,6 +121,11 @@ class TFReplanNode(object):
         # 如果导航已成功到达，停止发布路径
         if self.navigation_reached:
             rospy.loginfo_throttle(5.0, "导航已成功，停止发布路径")
+            return
+        
+        # 如果导航已被取消，停止发布路径
+        if self.navigation_cancelled:
+            rospy.loginfo_throttle(5.0, "导航已取消，停止发布路径")
             return
         
         # 从 TF 获取当前起点
@@ -176,6 +191,20 @@ class TFReplanNode(object):
         if len(raw_traj_3d) == 0:
             rospy.logwarn_throttle(2.0, "❌ Raw path is empty, skipping publish.")
             return
+
+        # 检查是否需要进行路径插值
+        need_interpolation = False
+        if len(raw_traj_3d) <= 2:
+            need_interpolation = True
+            rospy.loginfo("路径点数量少于等于2个 (%d)，将进行线性插值", len(raw_traj_3d))
+        elif distance < 0.3:
+            need_interpolation = True
+            rospy.loginfo("当前位置到目标距离小于0.3m (%.3fm)，将进行线性插值", distance)
+
+        # 如果需要插值，进行线性插值添加10个密集点
+        if need_interpolation:
+            raw_traj_3d = self.interpolate_path(raw_traj_3d, num_points=10)
+            rospy.loginfo("插值后路径点数量: %d", len(raw_traj_3d))
 
         # 为路径点添加朝向信息（后三个点，最后一个点使用目标朝向）
         path_msg = self.add_orientation_to_path(raw_traj_3d, self.end_orientation)
@@ -258,6 +287,71 @@ class TFReplanNode(object):
         path_msg.poses = poses
         return path_msg
 
+    def interpolate_path(self, path_points, num_points=10):
+        """
+        对路径进行线性插值，添加密集点
+
+        Args:
+            path_points: 原始路径点列表，shape为 (N, 3)
+            num_points: 插值后期望的总点数
+
+        Returns:
+            插值后的路径点列表
+        """
+        if len(path_points) < 2:
+            return path_points
+
+        import numpy as np
+
+        # 将路径点转换为numpy数组
+        path_array = np.array(path_points)
+
+        # 计算原始路径的总长度
+        total_length = 0
+        for i in range(len(path_array) - 1):
+            segment_length = np.linalg.norm(path_array[i+1] - path_array[i])
+            total_length += segment_length
+
+        if total_length == 0:
+            return path_points
+
+        # 计算每个插值点的累计距离间隔
+        desired_spacing = total_length / (num_points - 1)
+
+        interpolated_points = []
+        current_distance = 0
+        segment_start_idx = 0
+
+        # 第一个点
+        interpolated_points.append(path_array[0].tolist())
+
+        for i in range(1, num_points - 1):
+            target_distance = i * desired_spacing
+
+            # 找到目标距离所在的段
+            while segment_start_idx < len(path_array) - 1:
+                segment_end_idx = segment_start_idx + 1
+                segment_start = path_array[segment_start_idx]
+                segment_end = path_array[segment_end_idx]
+                segment_length = np.linalg.norm(segment_end - segment_start)
+
+                if current_distance + segment_length >= target_distance:
+                    # 在当前段内插值
+                    remaining_distance = target_distance - current_distance
+                    ratio = remaining_distance / segment_length
+
+                    interpolated_point = segment_start + ratio * (segment_end - segment_start)
+                    interpolated_points.append(interpolated_point.tolist())
+                    break
+
+                current_distance += segment_length
+                segment_start_idx += 1
+
+        # 最后一个点
+        interpolated_points.append(path_array[-1].tolist())
+
+        return interpolated_points
+
     def goal_callback(self, msg):
         """接收导航目标点回调函数"""
         self.end_pos = np.array([
@@ -276,6 +370,7 @@ class TFReplanNode(object):
 
         self.goal_received = True
         self.navigation_reached = False  # 重置导航状态
+        self.navigation_cancelled = False  # 重置取消状态
         self.goal_timestamp = rospy.Time.now()  # 记录新目标接收时间
 
         rospy.loginfo("📍 接收到新的导航目标: (%.3f, %.3f, %.3f)",
@@ -302,6 +397,23 @@ class TFReplanNode(object):
             rospy.logwarn("❌ 导航失败，状态码: %d", status)
             self.navigation_reached = False
         self.result_received = True
+    
+    def status_callback(self, msg):
+        """监听 move_base 状态，检测取消事件"""
+        if not msg.status_list:
+            return
+        
+        # 检查最新的目标状态
+        latest_status = msg.status_list[-1]
+        
+        # status = 2: PREEMPTED (被取消)
+        # status = 4: ABORTED (失败)
+        # status = 5: REJECTED (被拒绝)
+        if latest_status.status in [2, 4, 5]:
+            if not self.navigation_cancelled:
+                rospy.logwarn("🛑 检测到导航被取消/中止 (status=%d)，停止发布路径", latest_status.status)
+                self.navigation_cancelled = True
+                self.goal_received = False  # 停止接受新目标直到下一次明确的目标
 
 
 if __name__ == '__main__':
