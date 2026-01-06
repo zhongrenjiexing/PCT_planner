@@ -130,7 +130,7 @@ def publish_goal(pub, goal_data):
     rospy.loginfo("=" * 50)
     
     # 多次发布确保消息被接收
-    for i in range(3):
+    for i in range(1):
         pub.publish(goal)
         rospy.loginfo("发送第 %d 次...", i + 1)
         rospy.sleep(0.3)
