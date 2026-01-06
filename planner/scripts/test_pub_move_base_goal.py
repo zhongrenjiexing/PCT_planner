@@ -12,16 +12,7 @@ from geometry_msgs.msg import PoseStamped
 
 # 预定义的目标位置字典
 GOAL_POSITIONS = {
-    11: {
-        "name": "test",
-        "position": {"x": -1.5, "y": -4.5, "z": 1.0},
-        "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
-    },
-    12: {
-        "name": "test",
-        "position": {"x": -1.5, "y": -4.5, "z": 1.0},
-        "orientation": {"x": 0.0, "y": 0.0, "z": 0.707, "w": 0.707}
-    },
+
     1: {
         "name": "Button_AB_6L",
         "position": {"x": 20.56, "y": -9.88, "z": 1.0},
@@ -61,7 +52,48 @@ GOAL_POSITIONS = {
         "name": "Button_EF_5L",
         "position": {"x": 18.07, "y": -9.91, "z": -3.3},
         "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
-    }
+    },
+    11: {
+        "name": "test1",
+        "position": {"x": -1.5, "y": -4.5, "z": 1.0},
+        "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
+    },
+    12: {
+        "name": "test2",
+        "position": {"x": -1.5, "y": -4.5, "z": 1.0},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 0.707, "w": 0.707}
+    },
+    # 6L 电梯位置 (从 elevator_move_base_config.yaml 添加)
+    21: {
+        "name": "Elevator_A_6L",
+        "position": {"x": 22.35, "y": -8.14, "z": 1.0},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 1.0, "w": 0.0}
+    },
+    22: {
+        "name": "Elevator_B_6L",
+        "position": {"x": 22.35, "y": -10.9, "z": 1.0},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 1.0, "w": 0.0}
+    },
+    23: {
+        "name": "Elevator_C_6L",
+        "position": {"x": 22.35, "y": -13.8, "z": 1.0},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 1.0, "w": 0.0}
+    },
+    24: {
+        "name": "Elevator_D_6L",
+        "position": {"x": 16.4, "y": -14.67, "z": 1.0},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0}
+    },
+    25: {
+        "name": "Elevator_E_6L",
+        "position": {"x": 16.4, "y": -11.74, "z": 1.0},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0}
+    },
+    26: {
+        "name": "Elevator_F_6L",
+        "position": {"x": 16.4, "y": -8.86, "z": 1.0},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0}
+    },
 }
 
 
