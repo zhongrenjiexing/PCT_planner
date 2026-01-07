@@ -269,8 +269,8 @@ class TomogramPlanner(object):
             has_ceiling = elev_c_val < 1e5  # 是否有明确的天花板限制
             
             # 调试信息：打印每个 slice 的高度范围
-            if slice_idx < self.n_slice:  # 打印所有 slice
-                print(f"[DEBUG] slice {slice_idx}: elev_g={elev_g_val:.2f} (valid={is_valid_g}), elev_c={elev_c_val:.2f} (has_ceiling={has_ceiling}), z={z:.2f}")
+            # if slice_idx < self.n_slice:  # 打印所有 slice
+            #     print(f"[DEBUG] slice {slice_idx}: elev_g={elev_g_val:.2f} (valid={is_valid_g}), elev_c={elev_c_val:.2f} (has_ceiling={has_ceiling}), z={z:.2f}")
             
             # 只有当 elev_g 有效时才检查范围
             if is_valid_g:
@@ -281,13 +281,13 @@ class TomogramPlanner(object):
                     if elev_g_val <= z <= elev_c_val:
                         center_height = (elev_g_val + elev_c_val) / 2
                         valid_slices.append((slice_idx, abs(z - center_height)))
-                        print(f"[DEBUG] Found valid slice {slice_idx}: elev_g={elev_g_val:.2f}, elev_c={elev_c_val:.2f}, center={center_height:.2f}")
+                        # print(f"[DEBUG] Found valid slice {slice_idx}: elev_g={elev_g_val:.2f}, elev_c={elev_c_val:.2f}, center={center_height:.2f}")
                 else:
                     # 没有天花板限制，只要 z >= elev_g 即可
                     if z >= elev_g_val:
                         # 使用 elev_g 作为参考高度来计算距离
                         valid_slices.append((slice_idx, abs(z - elev_g_val)))
-                        print(f"[DEBUG] Found valid slice {slice_idx}: elev_g={elev_g_val:.2f}, elev_c=inf (no ceiling), z={z:.2f}")
+                        # print(f"[DEBUG] Found valid slice {slice_idx}: elev_g={elev_g_val:.2f}, elev_c=inf (no ceiling), z={z:.2f}")
         
         # 如果找到有效 slice，选择最接近 z 的
         if valid_slices:
