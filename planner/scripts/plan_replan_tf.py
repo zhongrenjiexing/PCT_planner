@@ -60,7 +60,7 @@ class TFReplanNode(object):
         self.goal_distance_threshold = 0.1  # 单位：米
 
         # 发布原始未优化路径
-        self.path_pub = rospy.Publisher("/pct_raw_path", Path, latch=True, queue_size=1)
+        self.path_pub = rospy.Publisher("/pct_raw_path", Path, latch=False, queue_size=1)
         
         # 订阅导航目标点
         self.goal_sub = rospy.Subscriber(

@@ -176,7 +176,7 @@ def main():
     rospy.init_node('test_move_base_goal_publisher', anonymous=True)
     
     # 创建Publisher - 使用 latch=True 确保晚到的订阅者也能收到
-    pub = rospy.Publisher('/move_base_simple/goal', PoseStamped, queue_size=10, latch=True)
+    pub = rospy.Publisher('/move_base_simple/goal', PoseStamped, queue_size=10, latch=False)
     
     # 给发布者足够的时间注册
     rospy.loginfo("初始化发布者...")

@@ -62,8 +62,8 @@ else:
     end_pos = np.array([23.0, 10.0], dtype=np.float32)
 
 
-path_pub = rospy.Publisher("/pct_path", Path, latch=True, queue_size=1)
-raw_path_pub = rospy.Publisher("/pct_raw_path", Path, latch=True, queue_size=1)
+path_pub = rospy.Publisher("/pct_path", Path, latch=False, queue_size=1)
+raw_path_pub = rospy.Publisher("/pct_raw_path", Path, latch=False, queue_size=1)
 planner = TomogramPlanner(cfg)
 
 def pct_plan():

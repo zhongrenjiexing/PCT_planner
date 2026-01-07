@@ -488,7 +488,7 @@ def main():
     rospy.init_node('web_move_base_goal_publisher', anonymous=True)
     
     # 创建Publisher
-    pub = rospy.Publisher('/move_base_simple/goal', PoseStamped, queue_size=10, latch=True)
+    pub = rospy.Publisher('/move_base_simple/goal', PoseStamped, queue_size=10, latch=False)
     cancel_pub = rospy.Publisher('/move_base/cancel', GoalID, queue_size=10)
     
     rospy.loginfo("初始化发布者...")
