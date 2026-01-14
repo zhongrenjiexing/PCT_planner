@@ -17,86 +17,182 @@ app = Flask(__name__)
 # 预定义的目标位置字典
 GOAL_POSITIONS = {
     1: {
-        "name": "Button_AB_6L",
-        "position": {"x": 20.56, "y": -9.88, "z": 1.0},
-        "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
-    },
-    2: {
-        "name": "Button_BC_6L",
-        "position": {"x": 20.58, "y": -12.78, "z": 1.0},
-        "orientation": {"x": 0.0, "y": 0.0, "z": 0.707, "w": 0.707}
-    },
-    3: {
-        "name": "Button_DE_6L",
-        "position": {"x": 18.18, "y": -12.79, "z": 1.0},
-        "orientation": {"x": 0.0, "y": 0.0, "z": 0.707, "w": 0.707}
-    },
-    4: {
-        "name": "Button_EF_6L",
-        "position": {"x": 18.17, "y": -9.91, "z": 1.0},
-        "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
-    },
-    5: {
-        "name": "Button_AB_5L",
-        "position": {"x": 20.66, "y": -9.88, "z": -3.3},
-        "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
-    },
-    6: {
-        "name": "Button_BC_5L",
-        "position": {"x": 20.68, "y": -12.78, "z": -3.3},
-        "orientation": {"x": 0.0, "y": 0.0, "z": 0.707, "w": 0.707}
-    },
-    7: {
-        "name": "Button_DE_5L",
-        "position": {"x": 18.08, "y": -12.79, "z": -3.3},
-        "orientation": {"x": 0.0, "y": 0.0, "z": 0.707, "w": 0.707}
-    },
-    8: {
-        "name": "Button_EF_5L",
-        "position": {"x": 18.07, "y": -9.91, "z": -3.3},
-        "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
-    },
-    11: {
         "name": "test1",
         "position": {"x": -1.5, "y": -4.5, "z": 1.0},
         "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
     },
-    12: {
+    2: {
         "name": "test2",
         "position": {"x": -1.5, "y": -4.5, "z": 1.0},
         "orientation": {"x": 0.0, "y": 0.0, "z": 0.707, "w": 0.707}
     },
+    3: {
+        "name": "middle_5",
+        "position": {"x": 19.5, "y": -10.99, "z": -3.3},
+        "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
+    },
+    4: {
+        "name": "middle_6",
+        "position": {"x": 19.5, "y": -10.99, "z": 1.0},
+        "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
+    },
+    5: {
+        "name": "middle_7",
+        "position": {"x": 19.5, "y": -10.99, "z": 4.7},
+        "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
+    },
+    6: {
+        "name": "Button_AB_5L",
+        "position": {"x": 20.66, "y": -9.88, "z": -3.3},
+        "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
+    },
+    7: {
+        "name": "Button_BC_5L",
+        "position": {"x": 20.68, "y": -12.78, "z": -3.3},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 0.707, "w": 0.707}
+    },
+    8: {
+        "name": "Button_DE_5L",
+        "position": {"x": 18.08, "y": -12.79, "z": -3.3},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 0.707, "w": 0.707}
+    },
+    9: {
+        "name": "Button_EF_5L",
+        "position": {"x": 18.07, "y": -9.91, "z": -3.3},
+        "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
+    },
+    10: {
+        "name": "Button_AB_6L",
+        "position": {"x": 20.56, "y": -9.88, "z": 1.0},
+        "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
+    },
+    11: {
+        "name": "Button_BC_6L",
+        "position": {"x": 20.58, "y": -12.78, "z": 1.0},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 0.707, "w": 0.707}
+    },
+    12: {
+        "name": "Button_DE_6L",
+        "position": {"x": 18.18, "y": -12.79, "z": 1.0},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 0.707, "w": 0.707}
+    },
+    13: {
+        "name": "Button_EF_6L",
+        "position": {"x": 18.17, "y": -9.91, "z": 1.0},
+        "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
+    },
+    14: {
+        "name": "Button_AB_7L",
+        "position": {"x": 20.56, "y": -9.88, "z": 4.7},
+        "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
+    },
+    15: {
+        "name": "Button_BC_7L",
+        "position": {"x": 20.58, "y": -12.78, "z": 4.7},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 0.707, "w": 0.707}
+    },
+    16: {
+        "name": "Button_DE_7L",
+        "position": {"x": 18.08, "y": -12.79, "z": 4.7},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 0.707, "w": 0.707}
+    },
+    17: {
+        "name": "Button_EF_7L",
+        "position": {"x": 18.07, "y": -9.91, "z": 4.7},
+        "orientation": {"x": 0.0, "y": 0.0, "z": -0.707, "w": 0.707}
+    },
+    18: {
+        "name": "Elevator_A_5L",
+        "position": {"x": 22.35, "y": -8.14, "z": -4.2},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 1.0, "w": 0.0}
+    },
+    19: {
+        "name": "Elevator_B_5L",
+        "position": {"x": 22.35, "y": -10.9, "z": -4.2},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 1.0, "w": 0.0}
+    },
+    20: {
+        "name": "Elevator_C_5L",
+        "position": {"x": 22.35, "y": -13.8, "z": -4.2},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 1.0, "w": 0.0}
+    },
     21: {
+        "name": "Elevator_D_5L",
+        "position": {"x": 16.4, "y": -14.67, "z": -4.2},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0}
+    },
+    22: {
+        "name": "Elevator_E_5L",
+        "position": {"x": 16.4, "y": -11.74, "z": -4.2},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0}
+    },
+    23: {
+        "name": "Elevator_F_5L",
+        "position": {"x": 16.4, "y": -8.86, "z": -4.2},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0}
+    },
+    24: {
         "name": "Elevator_A_6L",
         "position": {"x": 22.35, "y": -8.14, "z": 1.0},
         "orientation": {"x": 0.0, "y": 0.0, "z": 1.0, "w": 0.0}
     },
-    22: {
+    25: {
         "name": "Elevator_B_6L",
         "position": {"x": 22.35, "y": -10.9, "z": 1.0},
         "orientation": {"x": 0.0, "y": 0.0, "z": 1.0, "w": 0.0}
     },
-    23: {
+    26: {
         "name": "Elevator_C_6L",
         "position": {"x": 22.35, "y": -13.8, "z": 1.0},
         "orientation": {"x": 0.0, "y": 0.0, "z": 1.0, "w": 0.0}
     },
-    24: {
+    27: {
         "name": "Elevator_D_6L",
         "position": {"x": 16.4, "y": -14.67, "z": 1.0},
         "orientation": {"x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0}
     },
-    25: {
+    28: {
         "name": "Elevator_E_6L",
         "position": {"x": 16.4, "y": -11.74, "z": 1.0},
         "orientation": {"x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0}
     },
-    26: {
+    29: {
         "name": "Elevator_F_6L",
         "position": {"x": 16.4, "y": -8.86, "z": 1.0},
         "orientation": {"x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0}
     },
+    30: {
+        "name": "Elevator_A_7L",
+        "position": {"x": 22.35, "y": -8.14, "z": 4.7},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 1.0, "w": 0.0}
+    },
+    31: {
+        "name": "Elevator_B_7L",
+        "position": {"x": 22.35, "y": -10.9, "z": 4.7},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 1.0, "w": 0.0}
+    },
+    32: {
+        "name": "Elevator_C_7L",
+        "position": {"x": 22.35, "y": -13.8, "z": 4.7},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 1.0, "w": 0.0}
+    },
+    33: {
+        "name": "Elevator_D_7L",
+        "position": {"x": 16.4, "y": -14.67, "z": 4.7},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0}
+    },
+    34: {
+        "name": "Elevator_E_7L",
+        "position": {"x": 16.4, "y": -11.74, "z": 4.7},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0}
+    },
+    35: {
+        "name": "Elevator_F_7L",
+        "position": {"x": 16.4, "y": -8.86, "z": 4.7},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0}
+    }
 }
+
 
 # ROS发布者
 pub = None
