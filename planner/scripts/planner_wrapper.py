@@ -6,8 +6,15 @@ import numpy as np
 
 from utils import *
 
-sys.path.append('../')
-from lib import a_star, ele_planner, traj_opt
+# 设置正确的路径
+script_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(script_dir, '..'))
+lib_path = os.path.join(script_dir, '../lib')
+sys.path.insert(0, lib_path)
+
+import a_star
+import ele_planner
+import traj_opt
 
 rsg_root = os.path.dirname(os.path.abspath(__file__)) + '/../..'
 
@@ -217,10 +224,10 @@ class TomogramPlanner(object):
         valid_slices = []
         
         # 调试信息
-        print(f"[DEBUG] findValidSlice: pos={pos[:2]}, z={z}")
-        print(f"[DEBUG] x_idx={x_idx}, y_idx={y_idx}, map_dim={self.map_dim}")
-        print(f"[DEBUG] elev_g shape: {self.elev_g.shape}, elev_c shape: {self.elev_c.shape}")
-        print(f"[DEBUG] slice_h0={self.slice_h0}, slice_dh={self.slice_dh}, n_slice={self.n_slice}")
+        # print(f"[DEBUG] findValidSlice: pos={pos[:2]}, z={z}")
+        # print(f"[DEBUG] x_idx={x_idx}, y_idx={y_idx}, map_dim={self.map_dim}")
+        # print(f"[DEBUG] elev_g shape: {self.elev_g.shape}, elev_c shape: {self.elev_c.shape}")
+        # print(f"[DEBUG] slice_h0={self.slice_h0}, slice_dh={self.slice_dh}, n_slice={self.n_slice}")
         
         # 遍历所有 slice，查找 z 在 [elev_g, elev_c] 范围内的 slice
         # elev_g 和 elev_c 的形状是 [n_slice, map_dim_x, map_dim_y]

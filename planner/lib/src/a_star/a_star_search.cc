@@ -39,7 +39,8 @@ step_cost_weight_  = step_cost_weight;
       grid_map_[i][j].resize(max_x_);
       for (size_t k = 0; k < max_x_; ++k) {
         double height = height_map(j + row_offset, k);
-        double z = static_cast<int>(height / resolution);
+        // 使用四舍五入而非截断，避免微小高度差异导致z值跳变影响路径规划
+        double z = std::round(height / resolution);
         grid_map_[i][j][k] = Node(Eigen::Vector3i(z, j, k), nullptr);
         grid_map_[i][j][k].cost = cost_map(j + row_offset, k);
         grid_map_[i][j][k].height = height;
@@ -122,6 +123,13 @@ bool Astar::Search(const Eigen::Vector3i& start, const Eigen::Vector3i& goal) {
       }
       continue;
     }
+    
+    // 关键修复：跳过已经在closed_set中的节点（这些是过期的副本）
+    // 当同一个节点被多次添加到open_set时，只处理第一次（g值最小的那次）
+    auto existing = closed_set.find(GetHash(current_node->idx));
+    if (existing != closed_set.end()) {
+      continue;  // 已经处理过，跳过这个过期副本
+    }
 
     if (current_node->idx == goal_node->idx) {
       int path_idx = 0;
@@ -152,13 +160,24 @@ bool Astar::Search(const Eigen::Vector3i& start, const Eigen::Vector3i& goal) {
 
     closed_set[GetHash(current_node->idx)] = current_node;
 
-    // int layer = current_node->layer;
-    // if (current_node->ele > 0.5) {
-    //   layer = std::min(layer + 1, max_layers_ - 1);
-    // } else if (current_node->ele < -0.5) {
-    //   layer = std::max(layer - 1, 0);
-    // }
-    int layer = DecideLayer(current_node);
+    // 修复：只在当前层无效或需要gateway切换时才调用DecideLayer
+    // 这避免了在平面区域频繁切换层导致的绕路问题
+    int layer = current_node->layer;
+    
+    // 检查当前层在当前位置是否有效
+    int i_check = current_node->idx[1];
+    int j_check = current_node->idx[2];
+    const Node& current_pos_node = grid_map_[layer][i_check][j_check];
+    
+    // 只在以下情况调用DecideLayer:
+    // 1. 当前层在当前位置无效
+    // 2. 当前位置有gateway标记（需要切换层）
+    bool need_layer_change = !current_pos_node.valid || 
+                             std::abs(current_pos_node.ele) > 0.5;
+    
+    if (need_layer_change) {
+      layer = DecideLayer(current_node);
+    }
 
     int i, j = 0;
     double tentative_g = 0.0;
