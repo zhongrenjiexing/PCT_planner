@@ -51,10 +51,44 @@ elif args.scene == 'sii_l6':
 
     # end_pos = np.array([-2.5, -3.84, 0.1], dtype=np.float32) # 
 elif args.scene == 'SiiL6':
-    tomo_file = '2026-01-02_22-26-52_colorized_L567_FT_AddLift_AddPoints'
-    start_pos = np.array([-5.9, -0.9, -0.1], dtype=np.float32)
-    # end_pos = np.array([2.4, -21.7, 4.6], dtype=np.float32) # Maker Club
-    end_pos = np.array([7.88, -30.4, -4.0], dtype=np.float32) # 5L public area
+    tomo_file = '2026-01-02_22-26-52_colorized_L567_FT_AddLift_AddPoints_XYZ'
+    start_pos = np.array([-0.8, -3.23, -0.1], dtype=np.float32) # init pos
+    # start_pos = np.array([21.1, -22.7, 5.5], dtype=np.float32) # 7L ok
+    # end_pos = np.array([20.66, -9.88, 1.0], dtype=np.float32) # 6L Button_AB --movebase, OK!
+    # end_pos = np.array([20.68, -12.78, 1.0], dtype=np.float32) # 6L Button_BC ok
+    # end_pos = np.array([18.08, -12.79, 1.0], dtype=np.float32) # 6L Button_DE ok
+    # end_pos = np.array([18.07, -9.91, 1.0], dtype=np.float32) # 6L Button_EF ok
+    # end_pos = np.array([22.35, -8.14, 1.0], dtype=np.float32) # 6L Lift A ok
+    # end_pos = np.array([22.35, -10.9, 1.0], dtype=np.float32) # 6L Lift B ok
+    # end_pos = np.array([22.35, -13.8, 1.0], dtype=np.float32) # 6L Lift C ok
+    # end_pos = np.array([16.4, -14.67, 1.0], dtype=np.float32) # 6L Lift D ok
+    # end_pos = np.array([16.4, -11.74, 1.0], dtype=np.float32) # 6L Lift E ok
+    # end_pos = np.array([16.4, -8.86, 1.0], dtype=np.float32) # 6L Lift F ok
+
+    # end_pos = np.array([22.35, -8.14, -3.3], dtype=np.float32) # 5L Lift A ok
+    # end_pos = np.array([22.35, -10.9, -3.3], dtype=np.float32) # 5L Lift B ok
+    # end_pos = np.array([22.35, -13.8, -3.3], dtype=np.float32) # 5L Lift C ok
+    # end_pos = np.array([16.4, -14.67, -3.3], dtype=np.float32) # 5L Lift D ok
+    # end_pos = np.array([16.4, -11.74, -3.3], dtype=np.float32) # 5L Lift E ok
+    # end_pos = np.array([16.4, -8.86, -3.3], dtype=np.float32) # 5L Lift F ok
+
+    # end_pos = np.array([22.35, -8.14, -3.3], dtype=np.float32) # 5L Lift A --movebase, ok
+    # end_pos = np.array([22.35, -8.14, 5.5], dtype=np.float32) # 7L Lift A --movebase
+    # end_pos = np.array([25.1, -23.3, 4.6], dtype=np.float32) # 7L 
+    # end_pos = np.array([21.1, -22.7, 5.5], dtype=np.float32) # 7L ok
+    # end_pos = np.array([19.3, -20.4, 5.5], dtype=np.float32) # 7L no
+
+    # 7-A 
+    # start_pos = np.array([22.35, -8.14, 4.7], dtype=np.float32) # init pos
+    # start_pos = np.array([22.35, -10.9, 4.7], dtype=np.float32) # init pos
+    # start_pos = np.array([22.35, -13.8, 4.7], dtype=np.float32) # init pos
+    # start_pos = np.array([16.4, -14.67, 4.7], dtype=np.float32) # init pos
+    # start_pos = np.array([16.4, -11.74, 4.7], dtype=np.float32) # init pos
+    # start_pos = np.array([16.4, -8.86, 4.7], dtype=np.float32) # init pos
+    # start_pos = np.array([18.8, -6.79, 4.7], dtype=np.float32) # init pos
+    start_pos = np.array([22.35, -8.14, -4.2], dtype=np.float32) # init pos
+    
+    end_pos = np.array([19.3, -10.9, 4.7], dtype=np.float32) # 7L no
 
 else:
     tomo_file = 'plaza3_10'
