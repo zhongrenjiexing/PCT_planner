@@ -16,6 +16,11 @@ app = Flask(__name__)
 
 # 预定义的目标位置字典
 GOAL_POSITIONS = {
+    0: {
+        "name": "platform_5L-6L",
+        "position": {"x": 28.07, "y": -30.67, "z": -2.0},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0}
+    },
     1: {
         "name": "test1",
         "position": {"x": -1.5, "y": -4.5, "z": 1.0},
