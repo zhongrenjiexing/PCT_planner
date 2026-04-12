@@ -17,9 +17,9 @@ app = Flask(__name__)
 # 预定义的目标位置字典
 GOAL_POSITIONS = {
     0: {
-        "name": "platform_5L-6L",
-        "position": {"x": 28.07, "y": -30.67, "z": -2.0},
-        "orientation": {"x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0}
+        "name": "charging dock",
+        "position": {"x": 1.0, "y": -1.7, "z": 1.0},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 0, "w": 1}
     },
     1: {
         "name": "test1",
@@ -195,7 +195,12 @@ GOAL_POSITIONS = {
         "name": "Elevator_F_7L",
         "position": {"x": 16.4, "y": -8.86, "z": 4.7},
         "orientation": {"x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0}
-    }
+    },
+    36: {
+        "name": "platform_5L-6L",
+        "position": {"x": 28.07, "y": -30.67, "z": -2.0},
+        "orientation": {"x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0}
+    },
 }
 
 
